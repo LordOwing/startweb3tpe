@@ -1,3 +1,6 @@
+
+
+
 <div class="container">
     <?php if ($isError): displayErrors(); endif; ?>
     <h1 class="align-center">Formularz rejestracji użytkownika</h1>
