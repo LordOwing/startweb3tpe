@@ -1,0 +1,55 @@
+From a1ab5539c959676caf85d6132d7b6062b699507f Mon Sep 17 00:00:00 2001
+From: sinisti <spideralan2008@gmail.com>
+Date: Tue, 15 Oct 2024 15:17:13 +0200
+Subject: [PATCH 6/7] delete confirmation
+
+---
+ index.php                | 9 ++++++---
+ templates/users.html.php | 2 +-
+ 2 files changed, 7 insertions(+), 4 deletions(-)
+
+diff --git a/index.php b/index.php
+index 99d8c36..1a36a58 100644
+--- a/index.php
++++ b/index.php
+@@ -40,11 +40,13 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
+ 			</section>
+ 			<section class="content">
+ 				<?php
++				if(isset($_REQUEST['action'])){	
+ 					$action = $_REQUEST['action'];
+-					$id = (int) $_REQUEST['id'];
+-					switch ($action)
+-					{
++					switch($action){
+ 						case 'delete':
++							if(isset($_REQUEST['id']) && !empty($_REQUEST['id'])){
++								$id = (int) $_REQUEST['id'];
++							}
+ 							$query = "DELETE FROM users WHERE id=$id";
+ 							if ($db->query($query)){
+ 								showMessage('success', 'Data deleted succesfully!');
+@@ -54,6 +56,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
+ 							}
+ 							break;
+ 					}
++				}
+ 					include ('templates/users.html.php');	
+ 				?>
+ 			</section>
+diff --git a/templates/users.html.php b/templates/users.html.php
+index 0df5f98..2b979fd 100644
+--- a/templates/users.html.php
++++ b/templates/users.html.php
+@@ -13,7 +13,7 @@ if ($res->num_rows > 0){
+         $html .= '<td>' . $name . '</td>';
+         $html .= '<td>' . $row['user_email'] . '</td>';
+         $html .= '<td class="text-center">' . showStatusIcon($row['active']) . '</td>';
+-        $html .= '<td class="text-center">' . '<a href="index.php?action=delete&id=' . $row['id'] . '"><i class="fa fa-times text-danger" aria-hidden="true"></i> usuń</a></td>';
++        $html .= '<td class="text-center">' . '<a href="index.php?action=delete&id=' . $row['id'] . '" onclick="return confirm(\'Czy usunąć ten wpis?\');"><i class="fa fa-times text-danger" aria-hidden="true"></i> usuń</a></td>';
+         $html .= '</tr>';
+ 	}
+     $html .= '</table>';
+-- 
+2.46.0.windows.1
+

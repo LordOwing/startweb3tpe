@@ -1,0 +1,133 @@
+From 07017dc20a8676698cb3f763ba50d221287b02e0 Mon Sep 17 00:00:00 2001
+From: sinisti <spideralan2008@gmail.com>
+Date: Thu, 3 Oct 2024 13:05:17 +0200
+Subject: [PATCH 2/7] aktualizacja031024
+
+---
+ app/functions/helper.function.php |  9 +++++++++
+ index.php                         | 16 ++++++++++------
+ templates/form.html.php           |  4 ++--
+ templates/users.html.php          | 19 +++++++++++++------
+ 4 files changed, 34 insertions(+), 14 deletions(-)
+ create mode 100644 app/functions/helper.function.php
+
+diff --git a/app/functions/helper.function.php b/app/functions/helper.function.php
+new file mode 100644
+index 0000000..168d40f
+--- /dev/null
++++ b/app/functions/helper.function.php
+@@ -0,0 +1,9 @@
++<?php 
++function showStatusIcon($status){
++    if($status==0){
++        return '<i class="fa fa-minus text-danger" aria-hidden="true"></i>';
++    } else {
++        return '<i class="fa fa-check text-success" aria-hidden="true"></i>';
++    };
++}
++?>
+\ No newline at end of file
+diff --git a/index.php b/index.php
+index f2dbb46..614183f 100644
+--- a/index.php
++++ b/index.php
+@@ -1,10 +1,9 @@
+ <?php
+-
+ header('Content-Type: text/html; charset=UTF-8');
+-
+ require('app/config/config.php');
+ require('app/config/db.php');
+ require('app/functions/validate.function.php');
++require('app\functions\helper.function.php');	
+ if($_SERVER['REQUEST_METHOD'] == 'POST')
+ {	
+ 	fieldRequired('Imię', $_POST['name']);
+@@ -22,11 +21,15 @@ if($_SERVER['REQUEST_METHOD'] == 'POST')
+ 		$query = "INSERT INTO users SET user_name = '{$_POST['name']}', user_surname = '{$_POST['surname']}', user_email = '{$_POST['email']}', user_password = '$password'";
+ 		if ($db->query($query))
+ 		{
+-			echo 'Data was inserted Successfully';
++			echo '<div class="alert alert-success" role="alert">
++  				  Data inserted succesfully!
++				  </div>';
+ 		}
+ 		else
+ 		{
+-			echo 'Data has not been inserted!';
++			echo '<div class="alert alert-danger" role="alert">
++  				  Data has not been inserted!
++				  </div>';
+ 		}
+ 	}
+ }
+@@ -49,8 +52,9 @@ if($_SERVER['REQUEST_METHOD'] == 'POST')
+ 				<?php include ('templates/form.html.php'); ?>
+ 			</section>
+ 			<section class="content">
+-				<h1 class="align-center">Lista użytkowników</h1>
+-				<?php //include ('templates/users.html.php'); ?>
++				
++
++				<?php include ('templates/users.html.php'); ?>
+ 			</section>
+ 		</main>
+ 	</body>
+diff --git a/templates/form.html.php b/templates/form.html.php
+index a8e3de7..b8e83d9 100644
+--- a/templates/form.html.php
++++ b/templates/form.html.php
+@@ -12,11 +12,11 @@
+                 <input class="form-control" type="text" name="surname" placeholder="Nazwisko" value="<?php if(isset($_POST['surname']) && $isError): echo $_POST['surname']; endif; ?>" require/>
+             </div>
+             <div class="mb-4">
+-                <label class="form-label" for="email">Nazwisko</label>
++                <label class="form-label" for="email">E-mail</label>
+                 <input id="email" class="form-control" type="email" name="email" placeholder="Adres E-mail" value="<?php if(isset($_POST['email']) && $isError): echo $_POST['email']; endif; ?>" require>
+             </div>
+             <div class="mb-4">
+-                <label class="form-label" for="password">Nazwisko</label>
++                <label class="form-label" for="password">Hasło</label>
+                 <input id="password" class="form-control" type="password" name="password" placeholder="Hasło" require />
+             </div>                        
+             <div class="mb-4">
+diff --git a/templates/users.html.php b/templates/users.html.php
+index bd1ef71..d654d61 100644
+--- a/templates/users.html.php
++++ b/templates/users.html.php
+@@ -1,8 +1,8 @@
+-
++<h1 class="text-center">Lista użytkowników</h1>
++<div class="container">
+ <?php
+-
+-$html = '<table class="tbl-users">';
+-$html .= '<tr><th>ID</th><th>imię i nazwisko</th><th>email</th><th>aktywność</th></tr>';
++$html = '<table class="table">';
++$html .= '<tr><th>ID</th><th>imię i nazwisko</th><th>email</th><th class="text-center">aktywność</th></tr>';
+ $sql = "SELECT * FROM users";
+ $res = $db->query($sql);
+ if ($res->num_rows > 0)
+@@ -14,8 +14,15 @@ if ($res->num_rows > 0)
+         $html .= '<td>' . $row['id'] . '</td>';
+         $html .= '<td>' . $name . '</td>';
+         $html .= '<td>' . $row['user_email'] . '</td>';
+-        $html .= '<td class="align-center">' . showStatusIcon($row['active']) . '</td>';
++        $html .= '<td class="text-center">' . showStatusIcon($row['active']) . '</td>';
+         $html .= '</tr>';
+ 	}
++    $html .= '</table>';
+     echo $html;
+-}
+\ No newline at end of file
++}
++else
++{
++    echo '<p class="text-danger">Brak rekordów</p>';
++}
++?>
++</div>
+\ No newline at end of file
+-- 
+2.46.0.windows.1
+

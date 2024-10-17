@@ -1,0 +1,31 @@
+From 8384c251a495647178ed3e2d811ba409796eab30 Mon Sep 17 00:00:00 2001
+From: sinisti <spideralan2008@gmail.com>
+Date: Tue, 15 Oct 2024 14:50:26 +0200
+Subject: [PATCH 4/7] DELETE
+
+---
+ index.php | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/index.php b/index.php
+index 3be381d..99d8c36 100644
+--- a/index.php
++++ b/index.php
+@@ -45,7 +45,13 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
+ 					switch ($action)
+ 					{
+ 						case 'delete':
+-							echo 'delete';
++							$query = "DELETE FROM users WHERE id=$id";
++							if ($db->query($query)){
++								showMessage('success', 'Data deleted succesfully!');
++							}
++							else{
++								showMessage('warning', 'Data has not been deleted!');
++							}
+ 							break;
+ 					}
+ 					include ('templates/users.html.php');	
+-- 
+2.46.0.windows.1
+
